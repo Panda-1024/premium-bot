@@ -47,9 +47,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// 移除重复的索引定义
-// userSchema.index({ telegramId: 1 });
-// userSchema.index({ username: 1 });
 userSchema.index({ isPremium: 1 });
 
 const User = mongoose.model('User', userSchema);

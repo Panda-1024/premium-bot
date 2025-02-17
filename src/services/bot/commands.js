@@ -11,13 +11,14 @@ const startCommand = async (ctx) => {
 
         // 查找或创建用户
         let user = await User.findOne({ telegramId });
+        const isAdmin = config.bot.adminUserIds.includes(telegramId)
         if (!user) {
             user = await User.create({
                 telegramId,
                 username,
                 firstName: first_name,
                 lastName: last_name,
-                isAdmin: config.bot.adminUserIds.indexOf(telegramId) >= 0
+                isAdmin: isAdmin
             });
             logger.info(`New user registered: ${telegramId}`);
         }
@@ -40,10 +41,8 @@ const startCommand = async (ctx) => {
             ['👤 个人中心', '❓ 使用帮助']
         ];
 
-        logger.debug(`admin ids: ${config.bot.adminUserIds}`)
-
         // 如果是管理员，添加管理菜单
-        if (config.bot.adminUserIds.indexOf(telegramId) >= 0 || user.isAdmin) {
+        if (isAdmin || user.isAdmin) {
             mainMenu.push(['⚙️ 管理面板']);
         }
 

@@ -1,10 +1,5 @@
 const { Scenes, Markup } = require('telegraf');
-const { nanoid } = require('nanoid');
-const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
-const axios = require('axios');
-const { HttpsProxyAgent } = require('https-proxy-agent');
-const { SocksProxyAgent } = require('socks-proxy-agent');
 const User = require('../../../models/user');
 const Order = require('../../../models/order');
 const { Price } = require('../../../models/price');
@@ -82,7 +77,7 @@ buyScene.action(/select_plan:(\d+)/, async (ctx) => {
     } catch (error) {
         logger.error('Error selecting plan:', error);
         await ctx.reply('选择套餐失败，请重试。');
-        ctx.scene.leave();
+        await ctx.scene.leave();
     }
 });
 
@@ -102,8 +97,8 @@ buyScene.action('buy_for_self', async (ctx) => {
         
         if (searchResult.error) {
             await ctx.reply(
-                `查询用户失败：${searchResult.error}\n` +
-                '请稍后重试：',
+                `下单失败：${searchResult.error}\n` +
+                '请重新输入或点击返回：',
                 Markup.inlineKeyboard([[Markup.button.callback('返回', 'back_to_select_recipient')]])
             );
             return;
@@ -121,9 +116,10 @@ buyScene.action('buy_for_self', async (ctx) => {
         }
 
         // 查找或创建用户记录
-        let user = await User.findOne({ username: username });
+        let user = await User.findOne({ telegramId: ctx.from.id });
         if (!user) {
             user = await User.create({
+                telegramId: ctx.from.id,
                 username: username,
                 firstName: ctx.from.first_name,
                 lastName: ctx.from.last_name,
@@ -137,7 +133,7 @@ buyScene.action('buy_for_self', async (ctx) => {
     } catch (error) {
         logger.error('Error in buy for self:', error);
         await ctx.reply('创建订单失败，请重试。');
-        ctx.scene.leave();
+        await ctx.scene.leave();
     }
 });
 
@@ -163,7 +159,7 @@ buyScene.hears((_, ctx) => {
         
         if (searchResult.error) {
             await ctx.reply(
-                `查询用户失败：${searchResult.error}\n` +
+                `下单失败：${searchResult.error}\n` +
                 '请重新输入或点击返回：',
                 Markup.inlineKeyboard([[Markup.button.callback('返回', 'back_to_select_recipient')]])
             );
@@ -184,9 +180,10 @@ buyScene.hears((_, ctx) => {
         }
 
         // 查找或创建用户记录（购买者）
-        let buyer = await User.findOne({ username: ctx.from.username });
+        let buyer = await User.findOne({ telegramId: ctx.from.id });
         if (!buyer) {
             buyer = await User.create({
+                telegramId: ctx.from.id,
                 username: ctx.from.username,
                 firstName: ctx.from.first_name,
                 lastName: ctx.from.last_name,
@@ -245,7 +242,7 @@ const generateTimestamp = () => {
 
 // 生成8位随机数
 const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100000000); // 生成一个 8 位数字
+    return Math.floor(Math.random() * 99999999); // 生成一个 8 位数字
 };
   
 // 组合时间戳和随机数
@@ -319,18 +316,18 @@ async function createOrder(ctx, buyer, recipientUsername, isGift = false) {
             }
         );
 
-        ctx.scene.leave();
+        await ctx.scene.leave();
     } catch (error) {
         logger.error('Error creating order:', error);
         await ctx.reply('创建订单失败，请重试。');
-        ctx.scene.leave();
+        await ctx.scene.leave();
     }
 }
 
 // 取消操作
 buyScene.action('cancel', async (ctx) => {
     await ctx.deleteMessage(ctx.msgId);
-    ctx.scene.leave();
+    await ctx.scene.leave();
 });
 
 // 导出场景和设置函数

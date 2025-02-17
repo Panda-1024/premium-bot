@@ -5,11 +5,11 @@ module.exports = {
         token: process.env.BOT_TOKEN,
         adminUserIds: process.env.ADMIN_USER_IDS?.split(',').map(id => Number(id)) || [],
         proxy: {
-            enabled: process.env.TELEGRAM_PROXY_ENABLED === 'true',
+            enabled: process.env.TELEGRAM_PROXY_ENABLED === 'false',
             type: process.env.TELEGRAM_PROXY_TYPE || 'http',
             host: process.env.TELEGRAM_PROXY_HOST || '127.0.0.1',
             port: parseInt(process.env.TELEGRAM_PROXY_PORT) || 7890,
-            auth: process.env.TELEGRAM_PROXY_AUTH === 'true',
+            auth: process.env.TELEGRAM_PROXY_AUTH === 'false',
             username: process.env.TELEGRAM_PROXY_USERNAME,
             password: process.env.TELEGRAM_PROXY_PASSWORD
         }

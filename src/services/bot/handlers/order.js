@@ -1,7 +1,6 @@
 const { Scenes, Markup } = require('telegraf');
 const moment = require('moment');
 const User = require('../../../models/user');
-const Order = require('../../../models/order');
 const { getUserOrders, getOrderDetails, cancelOrder } = require('../../order');
 const logger = require('../../../utils/logger');
 
@@ -31,10 +30,7 @@ async function showOrderList(ctx, page, status = null) {
 
         if (!orders.length) {
             await ctx.reply(
-                '暂无订单记录。',
-                Markup.inlineKeyboard([[
-                    Markup.button.callback('返回主菜单', 'back_to_main')
-                ]])
+                '暂无订单记录。'
             );
             return;
         }
@@ -148,7 +144,7 @@ ordersScene.action(/filter:(.+)/, async (ctx) => {
 // 关闭
 ordersScene.action('close', async (ctx) => {
     await ctx.deleteMessage(ctx.msgId);
-    ctx.scene.leave();
+    await ctx.scene.leave();
 });
 
 // 格式化订单消息

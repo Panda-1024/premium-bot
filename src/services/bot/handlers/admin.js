@@ -308,7 +308,7 @@ adminScene.action('back_to_admin', async (ctx) => {
 // 关闭
 adminScene.action('close', async (ctx) => {
     await ctx.deleteMessage(ctx.msgId)
-    ctx.scene.leave();
+    await ctx.scene.leave();
 });
 
 // 搜索用户
@@ -368,62 +368,7 @@ adminScene.hears((value, ctx) => {
 }, async (ctx) => {
     try {
         const query = ctx.message.text;
-        showAdminOrderList(ctx, 1, query)
-        // const order = await Order.find({
-        //     $or: [
-        //         { orderId: query },
-        //         // 先找到用户，然后查询该用户的订单
-        //         { userId: { $in: await User.find({ telegramId: parseInt(query) || 0 }).distinct('_id') }}
-        //     ]
-        // }).populate('userId');
-
-        // if (!order) {
-        //     await ctx.reply(
-        //         '未找到订单。\n请重新输入或点击返回：',
-        //         Markup.inlineKeyboard([[Markup.button.callback('返回', 'admin_orders')]])
-        //     );
-        //     return;
-        // }
-
-        // let message = '📋 订单详情：\n\n';
-        // message += `订单号: ${order.orderId}\n`;
-        // if (order.userId.username) {
-        //     message += `下单用户: @${order.userId.username}\n`;
-        // } else {
-        //     message += `下单用户: ${order.userId.telegramId}\n`;
-        // }
-        // message += `开通账号: @${order.username}\n`;
-        // message += `金额: ${order.amount} USDT\n`;
-        // message += `状态: ${getOrderStatus(order.status)}\n`;
-        // if (order.status == 'failed') {
-        //     message += `失败原因: ${order.failureReason}\n`;
-        // }
-        // message += `创建时间: ${order.createdAt.toLocaleString()}\n`;
-        
-        // if (order.transactionHash) {
-        //     message += `USDT 交易: \`${order.transactionHash}\`\n`;
-        // }
-        // if (order.tonTransactionHash) {
-        //     message += `TON 交易: \`${order.tonTransactionHash}\`\n`;
-        // }
-        // if (order.failureReason) {
-        //     message += `失败原因: ${order.failureReason}\n`;
-        // }
-
-        // const buttons = [
-        //     [Markup.button.callback('返回', 'admin_orders')]
-        // ];
-
-        // // 如果订单发货失败，添加退款按钮
-        // if (order.status === 'failed') {
-        //     buttons.unshift([
-        //         Markup.button.callback('💰 退款', `refund_order:${order.orderId}`)
-        //     ]);
-        // }
-
-        // await ctx.reply(message, {
-        //     reply_markup: Markup.inlineKeyboard(buttons)
-        // });
+        await showAdminOrderList(ctx, 1, query)
         ctx.scene.state.waitingForOrderSearch = false;
     } catch (error) {
         logger.error('Error searching order:', error);

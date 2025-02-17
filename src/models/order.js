@@ -54,11 +54,6 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// 移除重复的索引定义
-// orderSchema.index({ orderId: 1 });
-// orderSchema.index({ userId: 1 });
-// orderSchema.index({ username: 1 });
-// orderSchema.index({ status: 1 });
 orderSchema.index({ createdAt: 1 });
 
 // 静态方法：检查是否有相同金额的待支付订单

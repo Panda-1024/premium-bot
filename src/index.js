@@ -8,10 +8,6 @@ const { startMonitoringTasks } = require('./services/blockchain/monitor');
 const { initializePrices } = require('./models/price');
 const { initializeConfigs } = require('./models/config');
 
-// 创建 Express 应用
-const app = express();
-app.use(express.json());
-
 // 初始化应用
 const initializeApp = async () => {
     try {
@@ -26,7 +22,7 @@ const initializeApp = async () => {
 
         const bot = setupBot();
         // 启动区块链监控服务
-        startMonitoringTasks(bot);
+        await startMonitoringTasks(bot);
         logger.info('Blockchain monitoring service started');
 
         // 启动机器人

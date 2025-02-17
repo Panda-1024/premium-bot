@@ -84,9 +84,8 @@ const setupBot = () => {
     bot.use(accessMiddleware);
 
     // 设置命令
-    bot.command('start', startCommand);
-    bot.command('plans', viewPlansCommand);
-    bot.command('help', helpCommand);
+    bot.start(startCommand);
+    bot.help(helpCommand);
 
     // 设置菜单处理程序
     bot.hears('💎 购买 Premium', ctx => ctx.scene.enter('buy'));

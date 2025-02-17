@@ -137,13 +137,11 @@ const handlePaymentConfirmation = async (bot, order, txId) => {
 const findMatchingOrder = async (amount) => {
     try {
         // 查找金额匹配且未过期的待支付订单
-        const order = await Order.findOne({
+        return await Order.findOne({
             status: 'pending',
             amount: amount,
-            expireAt: { $gt: new Date() }
-        }).sort({ createdAt: -1 });
-
-        return order;
+            expireAt: {$gt: new Date()}
+        }).sort({createdAt: -1});
     } catch (error) {
         logger.error('Error finding matching order:', error);
         return null;
