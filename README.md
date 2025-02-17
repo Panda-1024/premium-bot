@@ -66,13 +66,13 @@ cp .env.example .env
 3. 使用 Docker Compose 启动服务
 ```bash
 # 构建并启动服务
-docker-compose up -d
+docker compose up -d
 
 # 查看日志
-docker-compose logs -f
+docker compose logs -f
 
 # 停止服务
-docker-compose down
+docker compose down
 ```
 
 ## 环境变量说明
